@@ -115,37 +115,37 @@ The Auto Scaling Group automatically adjusts the number of EC2 instances based o
 
 
 ### 1. AWS Region Configuration
-![AWS Region](screenshots/region.png)
+![AWS Region](screenshots/region.PNG)
 
 ### 2. Security Group Configuration
-![Security Group](screenshots/security%20gp.png)
+![Security Group](<screenshots/security gp.PNG>)
 
 ### 3. Launch Template Creation
-![Launch Template](screenshots/launch%20template.png)
+![Launch Template](<screenshots/launch template.PNG>)
 
 ### 4. Launch Template Review
-![Launch Template Review](screenshots/reveiw.png)
+![Launch Template Review](screenshots/review.PNG)
 
 ### 5. Auto Scaling Group Configuration
-![Auto Scaling Group](screenshots/asg1.png)
+![Auto Scaling Group](screenshots/asg1.PNG)
 
 ### 6. VPC and Networking Configuration
-![VPC Configuration](screenshots/vpc.png)
+![VPC Configuration](screenshots/vpc.PNG)
 
 ### 7. Auto Scaling Capacity Settings
-![Capacity Configuration](screenshots/capacity.png)
+![Capacity Configuration](screenshots/capacity.PNG)
 
 ### 8. Desired Capacity Configuration
-![Desired Capacity](screenshots/desired%20capacity.png)
+![Desired Capacity](<screenshots/desired capacity.PNG>)
 
 ### 9. EC2 Instance Deployment
-![EC2 Instance](screenshots/runn.png)
+![EC2 Instance](screenshots/running.PNG)
 
 ### 10. Instance Running Status
-![Instance Running](screenshots/instance.png)
+![Instance Running](screenshots/instance.PNG)
 
-### 11. CloudWatch Monitoring Graph
-![CloudWatch Graph](screenshots/graph.png)               
+### 11. Cloudwatch Monitoring Graph
+![Cloudwatch Graph](screenshots/graph.PNG)            
 
 ### Conclusion
 
