@@ -14,6 +14,7 @@ a Linux web server automatically and demonstrates capacity changes.
 -   Amazon CloudWatch
 -   EC2 Security Groups
 
+### Architecture
 ```text
 User / Browser
       ↓
