@@ -1,6 +1,4 @@
-# AWS Project Assignment -- Question 3
-
-## EC2 Auto Scaling Environment
+# EC2 Auto Scaling Environment Using an EC2 Launch Template
 
 ### Objective
 
@@ -16,95 +14,138 @@ a Linux web server automatically and demonstrates capacity changes.
 -   Amazon CloudWatch
 -   EC2 Security Groups
 
+```mermaid
+flowchart TB
+    U["User / Web Browser"]
+    IG["Internet"]
+    SG["Security Group<br/>HTTP 80 | SSH 22"]
+    ASG["Amazon EC2 Auto Scaling Group<br/>Min: 1 | Desired: 2 | Max: 4"]
+    LT["Launch Template<br/>Amazon Linux 2023<br/>Instance Type: t2.micro<br/>User Data: Install Apache"]
+    EC2A["EC2 Instance 1<br/>Apache Web Server"]
+    EC2B["EC2 Instance 2<br/>Apache Web Server"]
+    EC2N["Additional EC2 Instances<br/>Launched when required"]
+    CW["Amazon CloudWatch<br/>CPU Utilization"]
+    SP["Target Tracking Scaling Policy<br/>Target CPU: 50%"]
+
+    U --> IG
+    IG --> SG
+    SG --> EC2A
+    SG --> EC2B
+    LT --> ASG
+    ASG --> EC2A
+    ASG --> EC2B
+    ASG -. Scale out .-> EC2N
+    EC2A --> CW
+    EC2B --> CW
+    EC2N --> CW
+    CW --> SP
+    SP --> ASG
+```
+
 ### Configuration
+AWS EC2 Auto Scaling Configuration
 
-  -----------------------------------------------------------------------
-  Setting                             Value
-  ----------------------------------- -----------------------------------
-  AWS Region                          `us-east-1` (as shown in the
-                                      console screenshots; confirm this
-                                      matches your deployed resources)
+1. AWS Region
 
-  Launch Template                     `ASG-Web-Template` (update if your
-                                      actual name differs)
+- AWS Region: "us-east-1 (N.Virginia)"
+- Service Used: Amazon EC2, Auto Scaling, CloudWatch
 
-  Auto Scaling Group                  `My-Web-ASG` (update if your actual
-                                      name differs)
+2. Security Group Configuration
 
-  Minimum capacity                    1
+- Security Group: Web Server Security Group
+- Inbound Rule 1: SSH (Port 22) – My IP
+- Inbound Rule 2: HTTP (Port 80) – 0.0.0.0/0
+- Outbound Traffic: All traffic allowed
 
-  Desired capacity                    2
+3. Launch Template Configuration
 
-  Maximum capacity                    4
+- Launch Template Name: "WebServer-Launch-Template"
+- AMI: Amazon Linux 2023
+- Instance Type: "t2.micro" (or the instance type selected)
+- Key Pair: Selected EC2 Key Pair
+- Security Group: Web Server Security Group
+- User Data: Install and start Apache HTTP Server automatically.
 
-  Scaling policy                      Target tracking
+4. Auto Scaling Group Configuration
 
-  Metric                              Average CPU utilization
+- Auto Scaling Group Name: "WebServer-ASG"
+- Launch Template: WebServer-Launch-Template
+- Minimum Capacity: 1
+- Desired Capacity: 2
+- Maximum Capacity: 4
+- Network: Selected VPC and subnets
+- Health Check Type: EC2
+- Health Check Grace Period: 300 seconds
 
-  Target CPU                          50%
+5. Scaling Policy Configuration
 
-  Web server                          Apache HTTP Server
-  -----------------------------------------------------------------------
+- Policy Type: Target Tracking Scaling
+- Metric: Average CPU Utilization
+- Target Value: 50%
+- Instance Warmup: 300 seconds
 
-### Implementation Steps
+The Auto Scaling Group automatically adjusts the number of EC2 instances based on CPU utilization, within the configured minimum and maximum capacity.
 
-1.  Created a security group with HTTP access on TCP port 80 and
-    restricted SSH access on TCP port 22.
-2.  Created a Launch Template using a Linux AMI and configured User Data
-    to install and start Apache.
-3.  Created an Auto Scaling Group using the Launch Template.
-4.  Set minimum, desired, and maximum capacity values.
-5.  Configured a CPU target-tracking scaling policy.
-6.  Connected to the Linux instance and installed/configured the web
-    server.
-7.  Checked CPU utilization and scaling activity in CloudWatch and the
-    Auto Scaling Group activity history.
+6. Web Server Configuration
 
-### Screenshot Location
+- Web Server: Apache HTTP Server
+- HTTP Port: 80
+- Web Page: Welcome to AWS Auto Scaling Project
+- User Data installs Apache, enables the service, and creates the web page automatically when an instance launches.
 
-The screenshot folder shown in Windows File Explorer is:
+7. CloudWatch Monitoring
 
-`Desktop\clouds Projects\que 3\screenshots`
+- Monitoring Service: Amazon CloudWatch
+- Metric: CPUUtilization
+- Metric Dimension: Auto Scaling Group / EC2 Instance
+- Purpose: Monitor CPU utilization and observe scaling behavior.
 
-For a portable submission, keep the screenshots in a folder named
-`screenshots` beside this README. Example relative path:
+8. Testing and Verification
 
-`./screenshots/`
+1. Verify that the desired number of EC2 instances is running.
+2. Open the public IPv4 address of an instance in a browser.
+3. Confirm that the web page is displayed.
+4. Generate CPU load if required for testing.
+5. Monitor CPU utilization in CloudWatch.
+6. Verify scaling activity and instance count changes in the Auto Scaling Group.
 
-The uploaded File Explorer photo shows these screenshot file labels: -
-`asg1` - `capacity` - `cpu utilty` - `desired capacity` - `graph` -
-`instance` - `launch template` - `region` - `review` - `run` -
-`security gp` - `vpc`
 
-Make sure the actual screenshot files are copied into the `screenshots`
-folder and use clear extensions such as `.png` or `.jpg`. The File
-Explorer photo is a view of the folder, not proof of the CloudWatch
-graph contents.
 
-### Testing Results
+### Screenshots
 
-Fill in the actual result after testing:
 
-  -----------------------------------------------------------------------
-  Test                                Expected / observed result
-  ----------------------------------- -----------------------------------
-  Launch Template                     Created
+### 1. AWS Region Configuration
+![AWS Region](screenshots/region.png)
 
-  Auto Scaling Group                  Created
+### 2. Security Group Configuration
+![Security Group](screenshots/security%20gp.png)
 
-  Initial EC2 instances               Record actual count and status
+### 3. Launch Template Creation
+![Launch Template](screenshots/launch%20template.png)
 
-  Apache web page                     Record whether reachable over HTTP
+### 4. Launch Template Review
+![Launch Template Review](screenshots/reveiw.png)
 
-  Desired capacity changed            Record whether the requested
-                                      instance count was reached
+### 5. Auto Scaling Group Configuration
+![Auto Scaling Group](screenshots/asg1.png)
 
-  CPU target tracking                 Record actual scaling action, if
-                                      any
+### 6. VPC and Networking Configuration
+![VPC Configuration](screenshots/vpc.png)
 
-  CloudWatch CPU metric               Attach the actual CPUUtilization
-                                      graph
-  -----------------------------------------------------------------------
+### 7. Auto Scaling Capacity Settings
+![Capacity Configuration](screenshots/capacity.png)
+
+### 8. Desired Capacity Configuration
+![Desired Capacity](screenshots/desired%20capacity.png)
+
+### 9. EC2 Instance Deployment
+![EC2 Instance](screenshots/runn.png)
+
+### 10. Instance Running Status
+![Instance Running](screenshots/instance.png)
+
+### 11. CloudWatch Monitoring Graph
+![CloudWatch Graph](screenshots/graph.png)               
 
 ### Conclusion
 
@@ -112,9 +153,4 @@ This project demonstrates automated EC2 provisioning and capacity
 management using AWS Auto Scaling and CloudWatch. Record only scaling
 actions and test outcomes that were actually observed.
 
-### Cleanup
-
-After collecting evidence, delete the Auto Scaling Group and verify that
-its EC2 instances have terminated. Remove unused launch templates and
-security groups when no longer needed, and check AWS Billing for
-remaining resources.
+.
