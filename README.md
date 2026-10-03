@@ -14,32 +14,31 @@ a Linux web server automatically and demonstrates capacity changes.
 -   Amazon CloudWatch
 -   EC2 Security Groups
 
-```mermaid
-flowchart TB
-    U["User / Web Browser"]
-    IG["Internet"]
-    SG["Security Group<br/>HTTP 80 | SSH 22"]
-    ASG["Amazon EC2 Auto Scaling Group<br/>Min: 1 | Desired: 2 | Max: 4"]
-    LT["Launch Template<br/>Amazon Linux 2023<br/>Instance Type: t2.micro<br/>User Data: Install Apache"]
-    EC2A["EC2 Instance 1<br/>Apache Web Server"]
-    EC2B["EC2 Instance 2<br/>Apache Web Server"]
-    EC2N["Additional EC2 Instances<br/>Launched when required"]
-    CW["Amazon CloudWatch<br/>CPU Utilization"]
-    SP["Target Tracking Scaling Policy<br/>Target CPU: 50%"]
-
-    U --> IG
-    IG --> SG
-    SG --> EC2A
-    SG --> EC2B
-    LT --> ASG
-    ASG --> EC2A
-    ASG --> EC2B
-    ASG -. Scale out .-> EC2N
-    EC2A --> CW
-    EC2B --> CW
-    EC2N --> CW
-    CW --> SP
-    SP --> ASG
+```text
+User / Browser
+      ↓
+   Internet
+      ↓
+Security Group
+      ↓
+┌─────────────────────────────────────┐
+│       EC2 Auto Scaling Group        │
+│                                     │
+│  EC2-1       EC2-2       EC2-N      │
+│ Apache       Apache      Apache     │
+│                                     │
+│ Min: 1 | Desired: 2 | Max: 4       │
+└─────────────────────────────────────┘
+      ↓
+ CloudWatch
+ CPU Utilization
+      ↓
+Target Tracking
+ Target CPU 50%
+      ↓
+Auto Scaling Group
+      ↺
+Scale In / Scale Out
 ```
 
 ### Configuration
